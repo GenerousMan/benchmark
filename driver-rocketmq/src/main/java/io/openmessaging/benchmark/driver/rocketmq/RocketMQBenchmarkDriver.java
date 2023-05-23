@@ -90,6 +90,11 @@ public class RocketMQBenchmarkDriver implements BenchmarkDriver {
                     topicConfig.setReadQueueNums(partitions);
                     topicConfig.setWriteQueueNums(partitions);
                     topicConfig.setTopicName(topic);
+                    topicConfig.getAttributes().put("+" + TopicAttributes.QUEUE_TYPE_ATTRIBUTE.getName(), "BatchCQ");
+                    System.out.println(String.format("Create topic [%s] to cluster [%s]", topic, this.rmqClientConfig.clusterName));
+                    //            Map<String, String> attributes = new HashMap<>();
+//            attributes.put("+" + TopicAttributes.QUEUE_TYPE_ATTRIBUTE.getName(), "BatchCQ");
+//            topicConfig.setAttributes(attributes);
 
                     try {
                         Set<String> brokerList =
@@ -121,6 +126,12 @@ public class RocketMQBenchmarkDriver implements BenchmarkDriver {
             }
             rmqProducer.setNamesrvAddr(this.rmqClientConfig.namesrvAddr);
             rmqProducer.setInstanceName("ProducerInstance" + getRandomString());
+            rmqProducer.setAutoBatch(true);
+            rmqProducer.batchMaxDelayMs(30);
+            rmqProducer.batchMaxBytes(2*1024*1024);
+            rmqProducer.totalBatchMaxBytes(2*64*1024*1024);
+            rmqProducer.setPollNameServerInterval(1000);
+
             if (null != this.rmqClientConfig.vipChannelEnabled) {
                 rmqProducer.setVipChannelEnabled(this.rmqClientConfig.vipChannelEnabled);
             }
