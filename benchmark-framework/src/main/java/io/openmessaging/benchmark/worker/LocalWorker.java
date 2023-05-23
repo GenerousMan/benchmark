@@ -94,6 +94,7 @@ public class LocalWorker implements Worker, ConsumerCallback {
         try {
             benchmarkDriver =
                     (BenchmarkDriver) Class.forName(driverConfiguration.driverClass).newInstance();
+            System.out.printf(driverConfiguration.driverClass);
             if (Objects.equals(driverConfiguration.driverClass.split(".")[-1], "KafkaBenchmarkDriver")) {
                 windowEnable = false;
                 System.out.printf("window enable: false.");
