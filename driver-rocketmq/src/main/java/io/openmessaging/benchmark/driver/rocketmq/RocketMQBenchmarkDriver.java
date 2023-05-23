@@ -93,9 +93,6 @@ public class RocketMQBenchmarkDriver implements BenchmarkDriver {
                     topicConfig.setTopicName(topic);
                     topicConfig.getAttributes().put("+" + TopicAttributes.QUEUE_TYPE_ATTRIBUTE.getName(), "BatchCQ");
                     System.out.println(String.format("Create topic [%s] to cluster [%s]", topic, this.rmqClientConfig.clusterName));
-                    //            Map<String, String> attributes = new HashMap<>();
-//            attributes.put("+" + TopicAttributes.QUEUE_TYPE_ATTRIBUTE.getName(), "BatchCQ");
-//            topicConfig.setAttributes(attributes);
 
                     try {
                         Set<String> brokerList =
