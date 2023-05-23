@@ -55,7 +55,7 @@ public class MessageProducer {
 
     private Void failure(Throwable t) {
         stats.recordProducerFailure();
-        log.warn("Write error on message", t);
+        // log.warn("Write error on message", t);
         return null;
     }
 
