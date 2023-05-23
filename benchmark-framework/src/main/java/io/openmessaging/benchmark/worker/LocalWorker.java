@@ -70,7 +70,7 @@ public class LocalWorker implements Worker, ConsumerCallback {
     private final WorkerStats stats;
     private boolean testCompleted = false;
     private boolean consumersArePaused = false;
-    private boolean windowEnable = true;
+    private boolean windowEnable = false;
 
     public LocalWorker() {
         this(NullStatsLogger.INSTANCE);
@@ -95,9 +95,9 @@ public class LocalWorker implements Worker, ConsumerCallback {
             benchmarkDriver =
                     (BenchmarkDriver) Class.forName(driverConfiguration.driverClass).newInstance();
             System.out.printf(driverConfiguration.driverClass);
-            if (Objects.equals(driverConfiguration.driverClass.split(".")[-1], "KafkaBenchmarkDriver")) {
-                windowEnable = false;
-                System.out.printf("window enable: false.");
+            if (Objects.equals(driverConfiguration.name,"RocketMQ")) {
+                this.windowEnable = true;
+                System.out.printf("window enable: true.");
             }
             benchmarkDriver.initialize(driverConfigFile, stats.getStatsLogger());
         } catch (InstantiationException
@@ -212,8 +212,8 @@ public class LocalWorker implements Worker, ConsumerCallback {
                         while (!testCompleted) {
                             producers.forEach(
                                     p -> {
-                                        if (messageProducer.windowsCnt.incrementAndGet() >= windowsSize) {
-                                            while (messageProducer.windowsCnt.get() >= windowsSize) {
+                                        if (windowEnable && messageProducer.windowsCnt.incrementAndGet() >= windowsSize) {
+                                            while (windowEnable && messageProducer.windowsCnt.get() >= windowsSize) {
                                                 Thread.yield();
                                             }
                                         }
