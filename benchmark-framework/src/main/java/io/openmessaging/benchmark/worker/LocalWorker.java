@@ -45,6 +45,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
@@ -69,6 +70,7 @@ public class LocalWorker implements Worker, ConsumerCallback {
     private final WorkerStats stats;
     private boolean testCompleted = false;
     private boolean consumersArePaused = false;
+    private boolean windowEnable = true;
 
     public LocalWorker() {
         this(NullStatsLogger.INSTANCE);
@@ -92,6 +94,10 @@ public class LocalWorker implements Worker, ConsumerCallback {
         try {
             benchmarkDriver =
                     (BenchmarkDriver) Class.forName(driverConfiguration.driverClass).newInstance();
+            if (Objects.equals(driverConfiguration.driverClass.split(".")[-1], "KafkaBenchmarkDriver")) {
+                windowEnable = false;
+                System.out.printf("window enable: false.");
+            }
             benchmarkDriver.initialize(driverConfigFile, stats.getStatsLogger());
         } catch (InstantiationException
                 | IllegalAccessException
