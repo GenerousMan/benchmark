@@ -18,6 +18,7 @@ import static io.openmessaging.benchmark.utils.UniformRateLimiter.uninterruptibl
 import io.openmessaging.benchmark.driver.BenchmarkProducer;
 import io.openmessaging.benchmark.utils.UniformRateLimiter;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ public class MessageProducer {
     private final WorkerStats stats;
     private UniformRateLimiter rateLimiter;
     private Supplier<Long> nanoClock;
+    public AtomicLong windowsCnt = new AtomicLong(0);
 
     MessageProducer(UniformRateLimiter rateLimiter, WorkerStats stats) {
         this(System::nanoTime, rateLimiter, stats);
@@ -51,10 +53,12 @@ public class MessageProducer {
     private void success(long payloadLength, long intendedSendTime, long sendTime) {
         long nowNs = nanoClock.get();
         stats.recordProducerSuccess(payloadLength, intendedSendTime, sendTime, nowNs);
+        windowsCnt.decrementAndGet();
     }
 
     private Void failure(Throwable t) {
         stats.recordProducerFailure();
+        windowsCnt.decrementAndGet();
         // log.warn("Write error on message", t);
         return null;
     }

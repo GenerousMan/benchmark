@@ -194,6 +194,7 @@ public class LocalWorker implements Worker, ConsumerCallback {
                         producer.sendAsync(Optional.of("key"), new byte[10]).thenRun(stats::recordMessageSent));
     }
 
+    int windowsSize = 1024*10;
     private void submitProducersToExecutor(
             List<BenchmarkProducer> producers, KeyDistributor keyDistributor, List<byte[]> payloads) {
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -203,11 +204,17 @@ public class LocalWorker implements Worker, ConsumerCallback {
                     try {
                         while (!testCompleted) {
                             producers.forEach(
-                                    p ->
+                                    p -> {
+                                            if(messageProducer.windowsCnt.incrementAndGet() >= windowsSize){
+                                                while (messageProducer.windowsCnt.get() >= windowsSize) {
+                                                    Thread.yield();
+                                                }
+                                            }
                                             messageProducer.sendMessage(
                                                     p,
                                                     Optional.ofNullable(keyDistributor.next()),
-                                                    payloads.get(r.nextInt(payloadCount))));
+                                                    payloads.get(r.nextInt(payloadCount)));
+                                    });
                         }
                     } catch (Throwable t) {
                         log.error("Got error", t);
