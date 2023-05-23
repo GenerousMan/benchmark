@@ -28,6 +28,7 @@ public class MessageProducer {
     private final WorkerStats stats;
     private UniformRateLimiter rateLimiter;
     private Supplier<Long> nanoClock;
+    public boolean windowEnable = false;
     public AtomicLong windowsCnt = new AtomicLong(0);
 
     MessageProducer(UniformRateLimiter rateLimiter, WorkerStats stats) {
@@ -53,12 +54,16 @@ public class MessageProducer {
     private void success(long payloadLength, long intendedSendTime, long sendTime) {
         long nowNs = nanoClock.get();
         stats.recordProducerSuccess(payloadLength, intendedSendTime, sendTime, nowNs);
-        windowsCnt.decrementAndGet();
+        if (windowEnable) {
+            windowsCnt.decrementAndGet();
+        }
     }
 
     private Void failure(Throwable t) {
         stats.recordProducerFailure();
-        windowsCnt.decrementAndGet();
+        if (windowEnable) {
+            windowsCnt.decrementAndGet();
+        }
         // log.warn("Write error on message", t);
         return null;
     }

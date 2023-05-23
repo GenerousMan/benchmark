@@ -97,6 +97,7 @@ public class LocalWorker implements Worker, ConsumerCallback {
             System.out.printf(driverConfiguration.driverClass);
             if (Objects.equals(driverConfiguration.name,"RocketMQ")) {
                 this.windowEnable = true;
+                this.messageProducer.windowEnable = true;
                 System.out.printf("window enable: true.");
             }
             benchmarkDriver.initialize(driverConfigFile, stats.getStatsLogger());
