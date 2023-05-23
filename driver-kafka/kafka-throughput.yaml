@@ -20,10 +20,10 @@ driverClass: io.openmessaging.benchmark.driver.kafka.KafkaBenchmarkDriver
 replicationFactor: 3
 
 topicConfig: |
-  min.insync.replicas=2
+  min.insync.replicas=1
 
 commonConfig: |
-  bootstrap.servers=localhost:9092
+  bootstrap.servers=172.16.66.110:9092
   default.api.timeout.ms=1200000
   request.timeout.ms=1200000
 

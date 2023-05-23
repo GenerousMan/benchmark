@@ -75,7 +75,7 @@
         <jcommander.version>1.48</jcommander.version>
         <junit.jupiter.version>5.9.0</junit.jupiter.version>
         <mockito.junit.jupiter.version>4.8.0</mockito.junit.jupiter.version>
-        <netty.version>4.1.65.Final</netty.version>
+        <netty.version>4.1.92.Final</netty.version>
         <slf4j.version>1.7.36</slf4j.version>
 
         <checkstyle.plugin.version>3.2.0</checkstyle.plugin.version>
@@ -122,8 +122,10 @@
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>${netty.version}</version>
+                <artifactId>netty-bom</artifactId>
+                <version>4.1.92.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

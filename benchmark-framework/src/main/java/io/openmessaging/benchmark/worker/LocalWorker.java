@@ -52,7 +52,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 import org.apache.bookkeeper.stats.NullStatsLogger;
 import org.apache.bookkeeper.stats.StatsLogger;
@@ -194,7 +193,8 @@ public class LocalWorker implements Worker, ConsumerCallback {
                         producer.sendAsync(Optional.of("key"), new byte[10]).thenRun(stats::recordMessageSent));
     }
 
-    int windowsSize = 1024*10;
+    int windowsSize = 1024 * 10;
+
     private void submitProducersToExecutor(
             List<BenchmarkProducer> producers, KeyDistributor keyDistributor, List<byte[]> payloads) {
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -205,15 +205,15 @@ public class LocalWorker implements Worker, ConsumerCallback {
                         while (!testCompleted) {
                             producers.forEach(
                                     p -> {
-                                            if(messageProducer.windowsCnt.incrementAndGet() >= windowsSize){
-                                                while (messageProducer.windowsCnt.get() >= windowsSize) {
-                                                    Thread.yield();
-                                                }
+                                        if (messageProducer.windowsCnt.incrementAndGet() >= windowsSize) {
+                                            while (messageProducer.windowsCnt.get() >= windowsSize) {
+                                                Thread.yield();
                                             }
-                                            messageProducer.sendMessage(
-                                                    p,
-                                                    Optional.ofNullable(keyDistributor.next()),
-                                                    payloads.get(r.nextInt(payloadCount)));
+                                        }
+                                        messageProducer.sendMessage(
+                                                p,
+                                                Optional.ofNullable(keyDistributor.next()),
+                                                payloads.get(r.nextInt(payloadCount)));
                                     });
                         }
                     } catch (Throwable t) {
