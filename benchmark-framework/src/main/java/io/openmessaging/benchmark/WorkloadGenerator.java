@@ -78,7 +78,7 @@ public class WorkloadGenerator implements AutoCloseable {
 
         ensureTopicsAreReady();
 
-        Thread.sleep(30000);
+        Thread.sleep(35000);
 
         if (workload.producerRate > 0) {
             targetPublishRate = workload.producerRate;
