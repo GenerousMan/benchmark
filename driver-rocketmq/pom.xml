@@ -26,7 +26,7 @@
     <artifactId>driver-rocketmq</artifactId>
 
     <properties>
-        <rocketmq.version>5.0.0-BETA-SNAPSHOT</rocketmq.version>
+        <rocketmq.version>5.1.4-SNAPSHOT</rocketmq.version>
     </properties>
 
     <dependencies>
