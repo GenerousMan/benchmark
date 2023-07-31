@@ -137,6 +137,7 @@ public class RocketMQBenchmarkDriver implements BenchmarkDriver {
             rmqProducer.batchMaxBytes(2 * 1024 * 1024);
             rmqProducer.totalBatchMaxBytes(2 * 64 * 1024 * 1024);
             rmqProducer.setPollNameServerInterval(1000);
+            rmqProducer.setEnableBackpressureForAsyncMode(true);
 
             if (null != this.rmqClientConfig.vipChannelEnabled) {
                 rmqProducer.setVipChannelEnabled(this.rmqClientConfig.vipChannelEnabled);
